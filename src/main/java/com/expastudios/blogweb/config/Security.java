@@ -1,3 +1,6 @@
+/***************************************************************
+ * Copyright (c) 2022
+ **************************************************************/
 package com.expastudios.blogweb.config;
 
 import com.expastudios.blogweb.filter.CustomAuthenticationFilter;
@@ -33,45 +36,51 @@ public class Security {
   private final UserRepository userRepository;
   
   @Bean
-  SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+  SecurityFilterChain filterChain ( HttpSecurity httpSecurity )
+  throws
+  Exception {
   
     // Configure AuthenticationManagerBuilder
-    AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
-    authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+    AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject (
+      AuthenticationManagerBuilder.class );
+    authenticationManagerBuilder
+      .userDetailsService ( userDetailsService )
+      .passwordEncoder ( bCryptPasswordEncoder );
   
     // Get AuthenticationManager
-    AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
+    AuthenticationManager authenticationManager = authenticationManagerBuilder.build ( );
   
   
-    httpSecurity.
-      cors().
-      and().
-      csrf().
-      disable();
+    httpSecurity
+      .cors ( )
+      .and ( )
+      .csrf ( )
+      .disable ( );
   
-    httpSecurity.
-      sessionManagement().
-      sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    httpSecurity
+      .sessionManagement ( )
+      .sessionCreationPolicy ( SessionCreationPolicy.STATELESS );
   
-    httpSecurity.
-      authorizeRequests().
-      antMatchers("/login/**", "/api/register/**").permitAll().
-      antMatchers(GET, "/api/user/**").hasAuthority("ROLE_USER");
+    httpSecurity
+      .authorizeRequests ( )
+      .antMatchers ( "/login/**", "/api/user/new/**", "/api/role/**" )
+      .permitAll ( )
+      .antMatchers ( GET, "/api/user/**" )
+      .hasAuthority ( "ROLE_USER" );
   
-    httpSecurity.
-      authorizeRequests().
-      anyRequest().
-      authenticated();
-    httpSecurity.formLogin();
+    httpSecurity
+      .authorizeRequests ( )
+      .anyRequest ( )
+      .authenticated ( );
+    httpSecurity.formLogin ( );
   
-    httpSecurity.
-      addFilter(new CustomAuthenticationFilter(authenticationManager)).
-    authenticationManager(authenticationManager);
-    
-    httpSecurity.
-      addFilterBefore(new CustomRequestFilter(), CustomAuthenticationFilter.class);
+    httpSecurity
+      .addFilter ( new CustomAuthenticationFilter ( authenticationManager ) )
+      .authenticationManager ( authenticationManager );
   
-    return httpSecurity.build();
+    httpSecurity.addFilterBefore ( new CustomRequestFilter ( ), CustomAuthenticationFilter.class );
+  
+    return httpSecurity.build ( );
   }
   
 }

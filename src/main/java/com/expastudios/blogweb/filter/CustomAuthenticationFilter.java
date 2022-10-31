@@ -1,3 +1,6 @@
+/***************************************************************
+ * Copyright (c) 2022
+ **************************************************************/
 package com.expastudios.blogweb.filter;
 
 import com.expastudios.blogweb.Util.TokenProvider;
@@ -49,19 +52,19 @@ import java.util.Map;
 										   ) {
 		
 		try {
-			String access_token  = TokenProvider.GenerateToken(request, 10 , authentication);
-			String refresh_token = TokenProvider.GenerateToken(request, 60 , authentication);
+			String access_token = TokenProvider.GenerateToken ( request, 60, authentication );
+			String refresh_token = TokenProvider.GenerateToken ( request, 3600, authentication );
 			
-			Map<String, String> token = new HashMap<>();
-			token.put("access_token", access_token);
-			token.put("refresh_token", refresh_token);
+			Map < String, String > token = new HashMap <> ( );
+			token.put ( "access_token", access_token );
+			token.put ( "refresh_token", refresh_token );
 			
-			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+			response.setContentType ( MediaType.APPLICATION_JSON_VALUE );
 			
-			response.setHeader("access_token", access_token);
-			response.setHeader("refresh_token", refresh_token);
+			response.setHeader ( "access_token", access_token );
+			response.setHeader ( "refresh_token", refresh_token );
 			
-			new ObjectMapper().writeValue(response.getOutputStream(), token);
+			new ObjectMapper ( ).writeValue ( response.getOutputStream ( ), token );
 		}
 		catch(Exception exc) {
 			log.error(exc.getLocalizedMessage());

@@ -1,5 +1,5 @@
 # *ExpaWeb BackEnd API
-        
+
 <div>
 <h1><u>Home</u></h1>
 http://localhost:8080/
@@ -28,10 +28,16 @@ http://localhost:8080/
 http://localhost:8080/login?logout
 </div>
 
+#*UserEndpoint Class
+<div>
+<h1><u>Profile</u></h1>
+http://localhost:8080/api/user/{userID}
+
+</div>
+
 <div>
 <h1><u>New User</u></h1>
 http://localhost:8080/api/user/new
-
 <p>
 <label>Request Format:</label>
 <br>  
@@ -56,11 +62,6 @@ http://localhost:8080/api/user/new
 </p>
 </div>
 
-<div>
-<h1><u>Profile</u></h1>
-http://localhost:8080/api/user/{userID}
-
-</div>
 
 <div>
 <h1><u>New Role</u></h1>
@@ -79,7 +80,7 @@ http://localhost:8080/api/role/new
 <div>
 <h1><u>Assign Role to User</u></h1>
 <label>
-    http://localhost:8080/api/role/addtouser
+    http://localhost:8080/api/role/adduser
 </label>                   
 <p>
 <label>Request Format:</label>
@@ -94,8 +95,23 @@ http://localhost:8080/api/role/new
 </p>                 
 
 </div>
-     
+
+
 <div>
+<h1><u>Get Post</u></h1>
+http://localhost:8080/api/post/{postID}
+
+</div>
+
+
+#*PostEndpoint Class
+<div>
+<h1><u>Get User's Posts</u></h1>
+http://localhost:8080/api/post/get/{userID}&pg={pageNumber}
+
+</div>
+
+ <div>
 <h1><u>New Post</u></h1>
 http://localhost:8080/api/post/new
 
@@ -117,21 +133,25 @@ http://localhost:8080/api/post/new
 </div>
 
 <div>
-<h1><u>Get Post</u></h1>
-http://localhost:8080/api/post/{postID}
-
+<h1><u>Edit Post</u></h1>
+http://localhost:8080/api/post/edit
 </div>
 
 <div>
-<h1><u>Get User's Posts</u></h1>
-http://localhost:8080/api/post/get/{userID}
+<h1><u>Delete Post</u></h1>
+http://localhost:8080/api/post/remove/{id}
+</div>
 
+
+#*TagEndpoint Class
+<div>
+<h1><u>Get Tag</u></h1>
+http://localhost:8080/api/tag/{tagID}
 </div>
 
 <div>
-<h1>New Tag</h1>
-http://localhost:8080/api/post/tag/new
-
+<h1><u>New Tag</u></h1>
+http://localhost:8080/api/tag/new
 <p>
 <label>Request Format:</label>
 <br>
@@ -143,4 +163,14 @@ http://localhost:8080/api/post/tag/new
 <br>
 }
 </p>
+</div>
+
+<div>
+<h1><u>Edit Tag</u></h1>
+http://localhost:8080/api/tag/edit
+</div>
+
+<div>
+<h1><u>Delete Tag</u></h1>
+http:localhost:8080/api/tag/delete
 </div>

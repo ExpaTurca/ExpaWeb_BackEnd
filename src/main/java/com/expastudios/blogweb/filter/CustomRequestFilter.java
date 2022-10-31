@@ -1,10 +1,12 @@
+/***************************************************************
+ * Copyright (c) 2022
+ **************************************************************/
 package com.expastudios.blogweb.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.expastudios.blogweb.Util.TokenProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -18,7 +20,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.*;
 
 import static com.expastudios.blogweb.Util.SecurityContextVariables.Prefix;
@@ -33,34 +34,45 @@ public class CustomRequestFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		
-		if(request.getServletPath().equals("/login")) {
-			filterChain.doFilter(request, response);
-		}
-		else {
-			final String authorization_header = request.getHeader(AUTHORIZATION);
-			if(authorization_header != null&&authorization_header.startsWith(Prefix)) {
+		if ( request
+		       .getServletPath ( )
+		       .equals ( "/login" ) || request
+			                             .getServletPath ( )
+			                             .equals ( "/api/user/new" ) || request
+			                                                              .getRequestURI ( )
+			                                                              .equals ( "/api/role/new" ) ) {
+			filterChain.doFilter ( request, response );
+		} else {
+			final String authorization_header = request.getHeader ( AUTHORIZATION );
+			if ( authorization_header != null && authorization_header.startsWith ( Prefix ) ) {
 				try {
-					String    token     = authorization_header.substring(Prefix.length());
-					Algorithm algorithm = Algorithm.HMAC256(Secret.getBytes());
+					String token = authorization_header.substring ( Prefix.length ( ) );
+					Algorithm algorithm = Algorithm.HMAC256 ( Secret.getBytes ( ) );
 					
-					JWTVerifier verifier   = JWT.require(algorithm).build();
-					DecodedJWT  decodedJWT = verifier.verify(token);
+					JWTVerifier verifier = JWT
+					                         .require ( algorithm )
+					                         .build ( );
+					DecodedJWT decodedJWT = verifier.verify ( token );
 					
-					String username = decodedJWT.getSubject();
+					String username = decodedJWT.getSubject ( );
 					
-					String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
+					String[] roles = decodedJWT
+					                   .getClaim ( "roles" )
+					                   .asArray ( String.class );
 					
-					Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+					Collection < SimpleGrantedAuthority > authorities = new ArrayList <> ( );
 					
-					stream(roles).forEach(role -> {
-						authorities.add(new SimpleGrantedAuthority(role));
-					});
+					stream ( roles ).forEach ( role -> {
+						authorities.add ( new SimpleGrantedAuthority ( role ) );
+					} );
 					
-					UsernamePasswordAuthenticationToken authenticationToken =
-					  new UsernamePasswordAuthenticationToken(username, null, authorities);
+					UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken (
+					  username, null, authorities );
 					
-					SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-					filterChain.doFilter(request, response);
+					SecurityContextHolder
+					  .getContext ( )
+					  .setAuthentication ( authenticationToken );
+					filterChain.doFilter ( request, response );
 				}
 				catch(Exception exc) {
 					log.error("Error logging in: {} ", exc.getMessage());

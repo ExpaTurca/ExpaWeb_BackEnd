@@ -1,18 +1,42 @@
+/***************************************************************
+ * Copyright (c) 2022
+ **************************************************************/
 package com.expastudios.blogweb.model;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import com.expastudios.blogweb.entity.Comment;
+import com.expastudios.blogweb.entity.Post;
+import lombok.*;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
-@RequiredArgsConstructor @Getter @Setter
+
+
+@RequiredArgsConstructor
+@Getter
+@Setter
 public class ProfileDTO {
-    private long id;
-    private String fulname;
-    private String email;
-    private char gender;
-    private String profileImage;
-    private Timestamp registeredAt;
+	
+	private UUID id;
+	
+	private String first_name;
+	
+	private String last_name;
+	
+	private String email;
+	
+	private String password_hash;
+	
+	private char gender;
+	
+	private String profile_image;
+	
+	private LocalDateTime registered_at;
+	
+	private boolean is_active;
+	
+	private Set < Post > postSet = new HashSet <> ( );
+	
+	private Set < Comment > commentSet = new HashSet <> ( );
+	
 }

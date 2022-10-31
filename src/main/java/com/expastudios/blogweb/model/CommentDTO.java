@@ -1,38 +1,36 @@
 /***************************************************************
  * Copyright (c) 2022
  **************************************************************/
+
+
+
 package com.expastudios.blogweb.model;
 
-import com.expastudios.blogweb.entity.*;
+import com.expastudios.blogweb.entity.Post;
+import com.expastudios.blogweb.entity.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.UUID;
 
 
 
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class PostDTO {
+public class CommentDTO {
 	
 	private UUID id;
 	
 	private User author;
 	
-	private String meta;
-	
-	private String summary;
+	private Post post;
 	
 	private String content;
 	
 	private LocalDateTime createdAt;
 	
 	private LocalDateTime updatedAt;
-	
-	private Set < Comment > commentSet = new HashSet <> ( );
-	
-	private Set < Tag > tagSet = new HashSet <> ( );
 	
 	private boolean isActive;
 	
