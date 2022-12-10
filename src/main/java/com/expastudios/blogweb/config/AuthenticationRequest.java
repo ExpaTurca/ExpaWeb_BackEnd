@@ -1,21 +1,22 @@
 /***************************************************************
  * Copyright (c) 2022
  **************************************************************/
-package com.expastudios.blogweb.model;
+
+
+
+package com.expastudios.blogweb.config;
 
 import lombok.*;
-
-import java.util.UUID;
 
 
 
 @Getter
 @Setter
-@RequiredArgsConstructor
-public class RoleDTO {
+@NoArgsConstructor
+public class AuthenticationRequest {
 	
-	private UUID userId;
+	private String email;
 	
-	private String roleName;
+	private String password;
 	
 }

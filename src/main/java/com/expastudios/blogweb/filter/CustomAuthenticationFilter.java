@@ -27,33 +27,33 @@ import java.util.Map;
 @RequiredArgsConstructor
 	public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	
-	@Autowired
-	private final AuthenticationManager authenticationManager;
+	@Autowired private final AuthenticationManager authenticationManager;
 	
 	@Override
-	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+	public Authentication attemptAuthentication ( HttpServletRequest request, HttpServletResponse response )
+	throws
+	AuthenticationException {
 		
 		try {
-			String username = request.getParameter("username");
-			String password = request.getParameter("password");
+			String username = request.getParameter ( "username" );
+			String password = request.getParameter ( "password" );
 			
-			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-			return authenticationManager.authenticate(authenticationToken);
-		}
-		catch(AuthenticationException exc) {
-			log.error(exc.getLocalizedMessage());
+			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken (
+			  username, password );
+			return authenticationManager.authenticate ( authenticationToken );
+		} catch ( AuthenticationException exc ) {
+			log.error ( exc.getLocalizedMessage ( ) );
 			return null;
 		}
 	}
 	
 	@Override
-	protected void successfulAuthentication(
-	  HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication
-										   ) {
+	protected void successfulAuthentication (
+	  HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication ) {
 		
 		try {
-			String access_token = TokenProvider.GenerateToken ( request, 60, authentication );
-			String refresh_token = TokenProvider.GenerateToken ( request, 3600, authentication );
+			String access_token = TokenProvider.GenerateToken ( request, 1,authentication );
+			String refresh_token = TokenProvider.GenerateToken ( request, 24,authentication );
 			
 			Map < String, String > token = new HashMap <> ( );
 			token.put ( "access_token", access_token );
@@ -65,26 +65,28 @@ import java.util.Map;
 			response.setHeader ( "refresh_token", refresh_token );
 			
 			new ObjectMapper ( ).writeValue ( response.getOutputStream ( ), token );
-		}
-		catch(Exception exc) {
-			log.error(exc.getLocalizedMessage());
+		} catch ( Exception exc ) {
+			log.error ( exc.getLocalizedMessage ( ) );
 		}
 	}
 	
 	@Override
-	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+	protected void unsuccessfulAuthentication (
+	  HttpServletRequest request, HttpServletResponse response, AuthenticationException failed )
+	throws
+	IOException,
+	ServletException {
 		
 		try {
-			Map<String, String> failed_login = new HashMap<>();
-			failed_login.put("failed_login", failed.getLocalizedMessage());
-			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+			Map < String, String > failed_login = new HashMap <> ( );
+			failed_login.put ( "failed_login", failed.getLocalizedMessage ( ) );
+			response.setContentType ( MediaType.APPLICATION_JSON_VALUE );
 			
-			response.setHeader("failed_login", failed.getLocalizedMessage());
+			response.setHeader ( "failed_login", failed.getLocalizedMessage ( ) );
 			
-			new ObjectMapper().writeValue(response.getOutputStream(), failed_login);
-		}
-		catch(Exception exc) {
-			log.error(exc.getLocalizedMessage());
+			new ObjectMapper ( ).writeValue ( response.getOutputStream ( ), failed_login );
+		} catch ( Exception exc ) {
+			log.error ( exc.getLocalizedMessage ( ) );
 		}
 	}
 	

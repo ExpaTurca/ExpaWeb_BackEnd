@@ -1,3 +1,9 @@
+/***************************************************************
+ * Copyright (c) 2022
+ **************************************************************/
+
+
+
 package com.expastudios.blogweb.repository;
 
 import com.expastudios.blogweb.entity.Role;
@@ -5,6 +11,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface RoleRepository extends JpaRepository<Role, Long> {
-	Optional<Role> findOneByRoleName(String name);
+
+
+public interface RoleRepository extends JpaRepository< Role, Short > {
+	
+	Optional < Role > findFirstByName ( String roleName );
+	
+	
 }

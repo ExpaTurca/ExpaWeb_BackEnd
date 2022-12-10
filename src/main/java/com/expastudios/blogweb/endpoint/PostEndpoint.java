@@ -3,13 +3,10 @@
  **************************************************************/
 package com.expastudios.blogweb.endpoint;
 
-import com.expastudios.blogweb.Util.EntityDtoConversion;
 import com.expastudios.blogweb.model.PostDTO;
-import com.expastudios.blogweb.model.TagDTO;
-import com.expastudios.blogweb.services.PostServiceImp;
+import com.expastudios.blogweb.services.IServices.PostService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,60 +18,46 @@ import java.util.*;
 
 @Slf4j
 @RestController
-@RequestMapping ( "/api/post" )
+@RequestMapping ( "/api")
 public class PostEndpoint {
 	
-	@Autowired private PostServiceImp postServiceImp;
+	@Autowired private PostService postService;
 	
-	@GetMapping ( "?p={Id}" )
+	@GetMapping ( "/post?postId={Id}" )
 	public Optional < PostDTO > getPost (
-	  @PathVariable ( value = "Id" ) UUID postId ) {
+	  @PathVariable ( value = "Id" ) String postId ) {
 		
-		
-		return postServiceImp
-		         .getPost ( postId )
-		         .map ( EntityDtoConversion::convertPostToDto );
+		return postService.getPost ( UUID.fromString ( postId ) );
 	}
 	
-	@GetMapping ( "/list" )
+	@GetMapping ( "/post/list" )
 	@ResponseBody
-	public Collection < PostDTO > getAllPost (
-	  @RequestParam ( value = "uID", required = true ) String userId,
-	  @RequestParam ( value = "pg", required = false ) int pageNumber ) {
+	public Set < PostDTO > getAllPost (
+	  @PathVariable ( value = "userID", required = true ) String userId,
+	  @PathVariable ( value = "page", required = false ) int pageNumber ) {
 		
-		if ( pageNumber == 0 ) { pageNumber = 1; }
-		Collection < PostDTO > postDTOCollection = new ArrayList <> ( );
-		postServiceImp
-		  .getAllPostByUserId ( UUID.fromString ( userId ), pageNumber )
-		  .forEach ( ( pst ) -> {
-			  postDTOCollection.add ( EntityDtoConversion.convertPostToDto ( pst ) );
-		  } );
-		return postDTOCollection;
+		return postService.getPostByUser ( UUID.fromString ( userId ), pageNumber );
 	}
 	
-	@PostMapping ( value = "/new" )
+	@PostMapping (value = "/post/create" )
 	public ResponseEntity < ? > createPost (
 	  @RequestBody PostDTO postDTO, HttpServletRequest request, HttpServletResponse response ) {
 		
-		return postServiceImp.createPost ( postDTO, request, response );
+		return postService.createPost ( postDTO, request, response );
 	}
 	
-	@PostMapping ( "/edit" )
+	@PostMapping ( value = "/post/edit" )
 	public ResponseEntity < ? > editPost (
-	  @RequestBody PostDTO postDTO,
-	  @RequestParam ( value = "p", required = true ) String postId, HttpServletRequest request,
-	  HttpServletResponse response ) {
+	  @RequestBody PostDTO postDTO, HttpServletRequest request, HttpServletResponse response ) {
 		
-		postDTO.setId ( UUID.fromString ( postId ) );
-		return postServiceImp.editPost ( postDTO, request, response );
+		return postService.editPost ( postDTO, request, response );
 	}
 	
-	@PostMapping ( "/remove" )
+	@PostMapping ( "/delete" )
 	public ResponseEntity < ? > removePost (
-	  @RequestParam ( value = "p", required = true ) UUID id, HttpServletRequest request,
-	  HttpServletResponse response ) {
+	  @PathVariable ( "post" ) UUID id, HttpServletRequest request, HttpServletResponse response ) {
 		
-		return postServiceImp.removePost ( id, request, response );
+		return postService.removePost ( id, request, response );
 	}
 	
 }

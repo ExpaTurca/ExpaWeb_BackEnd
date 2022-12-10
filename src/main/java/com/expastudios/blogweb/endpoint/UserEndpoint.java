@@ -3,72 +3,78 @@
  **************************************************************/
 package com.expastudios.blogweb.endpoint;
 
-import com.expastudios.blogweb.entity.Role;
-import com.expastudios.blogweb.model.ProfileDTO;
-import com.expastudios.blogweb.model.RegisterDTO;
-import com.expastudios.blogweb.services.UserService;
-import lombok.extern.slf4j.Slf4j;
+import com.expastudios.blogweb.model.RoleDTO;
+import com.expastudios.blogweb.model.UserDTO;
+import com.expastudios.blogweb.services.IServices.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import java.util.UUID;
 
 
 
-@Slf4j
 @RestController
-@RequestMapping ( "/api" )
+@RequestMapping ( "/api")
+@RequiredArgsConstructor
 public class UserEndpoint {
     
-    @Autowired private UserService userService;
-    
-    @GetMapping ( value = { "", "/home", "/feed" } )
-    public ResponseEntity < ? > home ( ) {
-        
-        return new ResponseEntity <> ( "Index", HttpStatus.OK );
-    }
-    
-    
-    @GetMapping ( value = "/role" )
-    public ResponseEntity < Role > getRole (
-      @RequestParam ( value = "role" ) String roleName ) {
-        
-        return userService.getRole ( roleName );
-    }
-    
+    @Autowired private final UserService userService;
     
     @GetMapping ( "/user" )
-    public ResponseEntity < ProfileDTO > getUser (
-      @RequestParam ( value = "email", required = true ) String email ) {
-        
+    public ResponseEntity < ? > Index ( String email, HttpServletRequest request, HttpServletResponse response )
+    throws
+    ClassNotFoundException {
+    
         return userService.getUser ( email );
     }
     
-    @PostMapping ( value = "/user/new" )
-    public ResponseEntity < ? > register (
-      @Valid
-      @RequestBody
-      RegisterDTO register, HttpServletRequest request, HttpServletResponse response )
+    @PostMapping ( "/user/create" )
+    public ResponseEntity < ? > NewUser (
+      @RequestBody UserDTO userDTO, HttpServletRequest request, HttpServletResponse response )
     throws
-    Exception {
-        
-        return userService.saveUser ( register, request, response );
+    ClassNotFoundException {
+    
+        return userService.saveUser ( userDTO, request, response );
     }
     
-    @PostMapping ( "/role/new" )
-    public ResponseEntity < ? > addRole ( String role ) {
-        
-        return userService.saveRole ( role );
+    public ResponseEntity < ? > EditUser (
+      @RequestBody UserDTO userDTO, HttpServletRequest request, HttpServletResponse response )
+    throws
+    ClassNotFoundException {
+    
+        return userService.editUser ( userDTO, request, response );
+    }
+    
+    @PostMapping ( "/role/create" )
+    public ResponseEntity < ? > NewRole ( String roleName, HttpServletRequest request, HttpServletResponse response ) {
+    
+        return userService.saveRole ( roleName );
     }
     
     @PostMapping ( "/role/adduser" )
-    public ResponseEntity < ? > addUserToRole ( String email, String role ) {
-        
-        return userService.addRoleToUser ( email, role );
+    public ResponseEntity < ? > AddRoleToUser (
+      @RequestBody RoleDTO roleDTO ) {
+    
+        UUID userId = roleDTO.getUserId ( );
+    
+        String roleName = roleDTO.getRoleName ( );
+        return userService.addRoleToUser ( userId, roleName );
+    }
+    
+    public ResponseEntity < ? > RemoveRole ( String roleName ) {
+    
+        return userService.deleteRole ( roleName );
+    }
+    
+    
+    @PostMapping ( "/role/user/delete" )
+    public ResponseEntity < ? > RemoveRoleFromUser ( String userId, String roleName ) {
+    
+        return userService.removeRoleFromUser ( UUID.fromString ( userId ), roleName );
     }
     
 }

@@ -12,10 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.expastudios.blogweb.Util.SecurityContextVariables.Prefix;
@@ -29,43 +31,68 @@ public class TokenProvider {
 	private static final String secret = "SECRET_PASSWORD";
 	
 	public static String GenerateToken (
-	  HttpServletRequest request, int ExpireMinute, Authentication authentication )
+	  UserDetails userDetails, int ExpireInHour )
 	throws
 	Exception {
 		
 		try {
-			User user = ( User ) authentication.getPrincipal ( );
 			Algorithm algorithm = Algorithm.HMAC256 ( secret.getBytes ( ) );
 			
 			return JWT
 			         .create ( )
-			         .withSubject ( user.getUsername ( ) )
-			         .withExpiresAt ( new Date ( System.currentTimeMillis ( ) + ( long ) ExpireMinute * 60 * 1000 ) )
-			         .withIssuer ( request.getRequestURI ( ) )
-			         .withClaim ( "roles", user
-				                             .getAuthorities ( )
-				                             .stream ( )
-				                             .map ( GrantedAuthority::getAuthority )
-				                             .collect ( Collectors.toList ( ) ) )
+			         .withSubject ( userDetails.getUsername ( ) )
+			         .withClaim ( "roles", userDetails
+			                                 .getAuthorities ( )
+			                                 .stream ( )
+			                                 .map ( GrantedAuthority::getAuthority )
+			                                 .collect ( Collectors.toList ( ) ) )
+			         .withIssuedAt ( new Date ( System.currentTimeMillis ( ) ) )
+			         .withExpiresAt ( new Date ( System.currentTimeMillis ( ) + TimeUnit.HOURS.toMillis ( ExpireInHour ) ) )
 			         .sign ( algorithm );
 		} catch ( Exception exc ) {
 			throw new Exception ( exc.getLocalizedMessage ( ) );
 		}
 	}
 	
-	public static boolean validateToken ( String token ) {
+	public static String GenerateToken (
+	  HttpServletRequest request, int ExpireInHour, Authentication authentication )
+	throws
+	Exception {
 		
-		return getUsernameToken ( token ) != null && !isExpired ( token );
+		try {
+			Algorithm algorithm = Algorithm.HMAC256 ( secret.getBytes ( ) );
+			User user = ( User ) authentication.getPrincipal ( );
+			
+			
+			return JWT
+			         .create ( )
+			         .withSubject ( user.getUsername ( ) )
+			         .withClaim ( "roles", user
+				                             .getAuthorities ( )
+				                             .stream ( )
+				                             .map ( GrantedAuthority::getAuthority )
+				                             .collect ( Collectors.toList ( ) ) )
+			         .withIssuer ( request.getRequestURI ( ) )
+			         .withExpiresAt ( new Date ( System.currentTimeMillis ( ) + TimeUnit.HOURS.toMillis ( ExpireInHour ) ) )
+			         .sign ( algorithm );
+		} catch ( Exception exc ) {
+			throw new Exception ( exc.getLocalizedMessage ( ) );
+		}
 	}
 	
-	public static String getUsernameToken ( String token ) {
+	private static boolean isValidToken ( String token ) {
+		
+		return getUsernameWithToken ( token ) != null && !isExpired ( token );
+	}
+	
+	public static String getUsernameWithToken ( String token ) {
 		
 		return getClaim ( token )
 		         .get ( "sub" )
 		         .asString ( );
 	}
 	
-	public static Date getExpireDate ( String token ) {
+	private static Date getExpireDate ( String token ) {
 		
 		return getClaim ( token )
 		         .get ( "exp" )

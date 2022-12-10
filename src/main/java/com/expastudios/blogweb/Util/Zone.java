@@ -14,7 +14,6 @@ public class Zone {
 	
 	public static LocalDateTime getCurrentTime ( ) {
 		
-		System.out.println ( "Zaman: " + LocalDateTime.now ( ) );
 		return LocalDateTime.now ( );
 	}
 	

@@ -9,6 +9,7 @@ import com.expastudios.blogweb.entity.User;
 import com.expastudios.blogweb.model.PostDTO;
 import com.expastudios.blogweb.repository.PostRepository;
 import com.expastudios.blogweb.repository.UserRepository;
+import com.expastudios.blogweb.services.IServices.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,18 +29,50 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostServiceImp implements PostService {
 	
-	@Autowired private UserRepository userRepository;
+	private final UserRepository userRepository;
 	
 	@Autowired private PostRepository postRepository;
 	
-	public ResponseEntity < ? > createPost ( PostDTO post, HttpServletRequest request, HttpServletResponse response ) {
+	@Override
+	public Optional < PostDTO > getPost ( UUID postId ) {
 		
-		String email = TokenProvider.getUsernameToken ( request.getHeader ( "Authorization" ) );
+		return postRepository
+		         .findById ( postId )
+		         .filter ( Post::isActive )
+		         .map ( ( map ) -> {
+			         try {
+				         return ( PostDTO ) EntityDtoConversion.ConvertToDTO ( map );
+			         } catch ( ClassNotFoundException e ) {
+				         throw new RuntimeException ( e );
+			         }
+		         } );
+	}
+	
+	@Override
+	public Set<PostDTO> getPostByUser ( UUID userId, int pageNumber ) {
+		
+		return postRepository
+		         .findByAuthor_Id ( userId )
+		         .stream ( )
+		         .filter ( Post::isActive )
+		         .map ( ( map ) -> {
+			         try {
+				         return ( PostDTO ) EntityDtoConversion.ConvertToDTO ( map );
+			         } catch ( ClassNotFoundException e ) {
+				         throw new RuntimeException ( e );
+			         }
+		         } )
+		         .collect ( Collectors.toSet ( ) );
+	}
+	
+	@Override
+	public ResponseEntity < ? > createPost (
+	  PostDTO post, HttpServletRequest request, HttpServletResponse response ) {
+		
+		String email = TokenProvider.getUsernameWithToken ( request.getHeader ( "Authorization" ) );
 		
 		try {
-			Optional < User > user = userRepository
-			                           .findByEmail ( email )
-			                           .filter ( User::isActive );
+			Optional < User > user = userRepository.findByEmailAndIsActiveTrue ( email );
 			
 			post.setAuthor ( user.orElseThrow ( ) );
 			post.setActive ( true );
@@ -48,29 +80,35 @@ public class PostServiceImp implements PostService {
 			
 			user
 			  .map ( ( map ) -> {
-				  map
-					.getPostSet ( )
-					.add ( EntityDtoConversion.convertPostToEntity ( post ) );
+				  try {
+					  map
+					    .getPostSet ( )
+					    .add ( ( Post ) EntityDtoConversion.ConvertToEntity ( post ) );
+					
+				  } catch ( ClassNotFoundException e ) {
+					  throw new RuntimeException ( e );
+				  }
 				  return map;
 			  } )
 			  .ifPresent ( ( act ) -> {
 				  userRepository.save ( act );
+				  post.setAuthor ( user.orElseThrow ( ) );
 			  } );
-			
-			postRepository.save ( EntityDtoConversion.convertPostToEntity ( post ) );
 			
 			return new ResponseEntity <> ( "success-message", HttpStatus.OK );
 		} catch ( Exception exc ) {
-			throw new RuntimeException ( "Paylaşım oluşturulurken hata oluştu! Hata: " + exc.getMessage ( ) );
+			throw new RuntimeException ( exc.getLocalizedMessage ( ) );
 		}
 	}
 	
-	@Transactional
-	public ResponseEntity < ? > editPost ( PostDTO post, HttpServletRequest request, HttpServletResponse response ) {
+	@Override
+	public ResponseEntity < ? > editPost (
+	  PostDTO post, HttpServletRequest request, HttpServletResponse response ) {
 		
-		try {
+		return new ResponseEntity <> ( HttpStatus.OK );
+/*		try {
 			postRepository
-			  .findById ( post.getId ( ) )
+			  .findOneById ( post.getId ( ) )
 			  .filter ( Post::isActive )
 			  .map ( ( map ) -> {
 				  map = EntityDtoConversion.convertPostToEntity ( post );
@@ -82,18 +120,20 @@ public class PostServiceImp implements PostService {
 				  postRepository.save ( EntityDtoConversion.convertPostToEntity ( post ) );
 			  } );
 			
-			return new ResponseEntity <> ( "success-message", HttpStatus.OK );
+			return new ResponseEntity <> ( "true", HttpStatus.OK );
 		} catch ( Exception exc ) {
-			throw new RuntimeException ( exc.getMessage ( ) );
-		}
+			throw new RuntimeException ( "Hata: " + exc.getMessage ( ) );
+		}*/
 	}
 	
-	@Transactional
-	public ResponseEntity < ? > removePost ( UUID Id, HttpServletRequest request, HttpServletResponse response ) {
+	@Override
+	public ResponseEntity < ? > removePost (
+	  UUID Id, HttpServletRequest request, HttpServletResponse response ) {
 		
-		try {
+		return  new ResponseEntity<> ( HttpStatus.OK );
+/*		try {
 			postRepository
-			  .findById ( Id )
+			  .findOneById ( Id )
 			  .filter ( Post::isActive )
 			  .map ( ( map ) -> {
 				  map.setActive ( false );
@@ -103,31 +143,10 @@ public class PostServiceImp implements PostService {
 				  postRepository.save ( act );
 			  } );
 			
-			return new ResponseEntity <> ( "success-message", HttpStatus.OK );
+			return new ResponseEntity <> ( "true", HttpStatus.OK );
 		} catch ( Exception exc ) {
 			throw new RuntimeException ( exc.getMessage ( ) );
-		}
-	}
-	
-	public Optional < Post > getPost ( UUID postId ) {
-		
-		return postRepository
-		         .findById ( postId )
-		         .filter ( Post::isActive );
-	}
-	
-	
-	public Set < Post > getAllPostByUserId ( UUID userId, int pageNumber ) {
-		
-		return userRepository
-		         .findById ( userId )
-		         .filter ( User::isActive )
-		         .map ( ( map ) -> map
-			                         .getPostSet ( )
-			                         .stream ( )
-			                         .filter ( Post::isActive )
-			                         .collect ( Collectors.toSet ( ) ) )
-		         .orElseThrow ( );
+		}*/
 	}
 	
 }

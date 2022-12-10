@@ -5,7 +5,6 @@ package com.expastudios.blogweb.config;
 
 import com.expastudios.blogweb.filter.CustomAuthenticationFilter;
 import com.expastudios.blogweb.filter.CustomRequestFilter;
-import com.expastudios.blogweb.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -28,59 +27,66 @@ import static org.springframework.http.HttpMethod.GET;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class Security {
-  
-  private final UserDetailsService userDetailsService;
-  
-  private final BCryptPasswordEncoder bCryptPasswordEncoder;
-  
-  private final UserRepository userRepository;
-  
-  @Bean
-  SecurityFilterChain filterChain ( HttpSecurity httpSecurity )
-  throws
-  Exception {
-  
-    // Configure AuthenticationManagerBuilder
-    AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject (
-      AuthenticationManagerBuilder.class );
-    authenticationManagerBuilder
-      .userDetailsService ( userDetailsService )
-      .passwordEncoder ( bCryptPasswordEncoder );
-  
-    // Get AuthenticationManager
-    AuthenticationManager authenticationManager = authenticationManagerBuilder.build ( );
-  
-  
-    httpSecurity
-      .cors ( )
-      .and ( )
-      .csrf ( )
-      .disable ( );
-  
-    httpSecurity
-      .sessionManagement ( )
-      .sessionCreationPolicy ( SessionCreationPolicy.STATELESS );
-  
-    httpSecurity
-      .authorizeRequests ( )
-      .antMatchers ( "/login/**", "/api/user/new/**", "/api/role/**" )
-      .permitAll ( )
-      .antMatchers ( GET, "/api/user/**" )
-      .hasAuthority ( "ROLE_USER" );
-  
-    httpSecurity
-      .authorizeRequests ( )
-      .anyRequest ( )
-      .authenticated ( );
-    httpSecurity.formLogin ( );
-  
-    httpSecurity
-      .addFilter ( new CustomAuthenticationFilter ( authenticationManager ) )
-      .authenticationManager ( authenticationManager );
-  
-    httpSecurity.addFilterBefore ( new CustomRequestFilter ( ), CustomAuthenticationFilter.class );
-  
-    return httpSecurity.build ( );
-  }
-  
+	
+	private final UserDetailsService userDetailsService;
+	
+	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	@Bean
+	SecurityFilterChain filterChain ( HttpSecurity httpSecurity )
+	throws
+	Exception {
+		
+		AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject (
+		  AuthenticationManagerBuilder.class );
+		
+		authenticationManagerBuilder
+		  .userDetailsService ( userDetailsService )
+		  .passwordEncoder ( bCryptPasswordEncoder );
+		
+		AuthenticationManager authenticationManager = authenticationManagerBuilder.build ( );
+		
+		httpSecurity
+		  .cors ( )
+		  .and ( )
+		  .csrf ( )
+		  .disable ( );
+		
+		httpSecurity
+		  .sessionManagement ( )
+		  .sessionCreationPolicy ( SessionCreationPolicy.STATELESS );
+		
+		httpSecurity
+		  .authorizeRequests ( )
+		  .antMatchers ( "/authentication/login/**", "/**/user/create/**", "/**/role/**" )
+		  .permitAll ( )
+		  .antMatchers ( GET, "/**/user/**" )
+		  .hasAuthority ( "ROLE_USER" );
+		
+		httpSecurity
+		  .authorizeRequests ( )
+		  .anyRequest ( )
+		  .authenticated ( );
+				
+		httpSecurity
+		  .formLogin ( )
+		  .loginPage ( "/authentication/login" )
+		  .failureUrl ( "/authentication/login?failed" )
+		  .loginProcessingUrl ( "/authentication/login/process" )
+		  .and ( )
+		  .logout ( )
+		  .deleteCookies ( "remove" )
+		  .invalidateHttpSession ( false )
+		  .logoutUrl ( "/authentication/custom-logout" )
+		  .logoutSuccessUrl ( "/authentication/logout-success" );
+		
+		httpSecurity
+		  .addFilter ( new CustomAuthenticationFilter ( authenticationManager ) )
+		  .authenticationManager ( authenticationManager );
+		
+		httpSecurity.addFilterBefore ( new CustomRequestFilter ( ), CustomAuthenticationFilter.class );
+		
+		return httpSecurity.build ( );
+	}
+	
 }

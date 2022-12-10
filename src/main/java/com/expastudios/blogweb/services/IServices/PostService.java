@@ -4,9 +4,8 @@
 
 
 
-package com.expastudios.blogweb.services;
+package com.expastudios.blogweb.services.IServices;
 
-import com.expastudios.blogweb.entity.Post;
 import com.expastudios.blogweb.model.PostDTO;
 import org.springframework.http.ResponseEntity;
 
@@ -24,8 +23,8 @@ public interface PostService {
 	
 	ResponseEntity < ? > removePost ( UUID Id, HttpServletRequest request, HttpServletResponse response );
 	
-	Optional < Post > getPost ( UUID postId );
+	Optional < PostDTO > getPost ( UUID postId );
 	
-	Set < Post > getAllPostByUserId ( UUID userId, int pageNumber );
+	Set < PostDTO > getPostByUser ( UUID userId, int pageNumber );
 	
 }

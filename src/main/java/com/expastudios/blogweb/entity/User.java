@@ -3,13 +3,11 @@
  **************************************************************/
 package com.expastudios.blogweb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.*;
+import org.hibernate.annotations.*;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
@@ -18,6 +16,7 @@ import java.util.*;
 
 
 @Entity
+@Getter
 @Setter
 @RequiredArgsConstructor
 public class User {
@@ -27,20 +26,21 @@ public class User {
 	@GenericGenerator ( name = "UUID", strategy = "org.hibernate.id.UUIDGenerator", parameters = {
 	  @org.hibernate.annotations.Parameter ( name = "uuid_gen_strategy_class",
 	                                         value = "org.hibernate.id.uuid.CustomVersionOneStrategy" ) } )
-	@Column ( columnDefinition = "BINARY(16)" )
+	@Column ( name = "id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)" )
+	@Type ( type = "uuid-char")
 	private UUID id;
 	
 	@Size ( min = 3, max = 32 )
 	@Column ( length = 32 )
-	private String first_name;
+	private String firstName;
 	
 	@Column ( length = 32 )
 	@Size ( min = 3, max = 32 )
-	private String last_name;
+	private String lastName;
 	
 	@Size ( max = 256 )
 	@Column ( length = 256, columnDefinition = "varchar(256) default '~/profile/author.png'" )
-	private String profile_image;
+	private String profileImage;
 	
 	@NotNull private char gender;
 	
@@ -50,10 +50,10 @@ public class User {
 	@Column ( length = 128, unique = true, nullable = false )
 	private String email;
 	
-	@NotNull ( message = "Bos Deger girilemez." )
+	@NotNull ( message = "Şifre kısmı boş geçilemez." )
 	@Size ( max = 60 )
 	@Column ( length = 60, nullable = false )
-	private String password_hash;
+	private String password;
 	
 	@NotNull
 	@Column ( columnDefinition = "boolean default 1" )
@@ -62,9 +62,9 @@ public class User {
 	@NotNull
 	@Column ( columnDefinition = "TimeStamp default CURRENT_TIMESTAMP" )
 	@UpdateTimestamp ()
-	private LocalDateTime registered_at;
+	private LocalDateTime registeredAt;
 	
-	@UpdateTimestamp () private LocalDateTime last_login;
+	@UpdateTimestamp () private LocalDateTime lastLogin;
 	
 	@Size ( max = 1024 ) private String bio;
 	
@@ -76,80 +76,8 @@ public class User {
 	@OneToMany ( fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "author" ) private Set < Post >
 	  postSet = new HashSet <> ( );
 	
-	@OneToMany ( fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "author" ) private Set < Comment >
-	  commentSet = new HashSet <> ( );
-	
-	@JsonManagedReference
-	public Set < Post > getPostSet ( ) {
-		
-		return postSet;
-	}
-	
-	@JsonManagedReference
-	public Set < Comment > getCommentSet ( ) {
-		
-		return commentSet;
-	}
-	
-	public UUID getId ( ) {
-		
-		return id;
-	}
-	
-	public String getFirst_name ( ) {
-		
-		return first_name;
-	}
-	
-	public String getLast_name ( ) {
-		
-		return last_name;
-	}
-	
-	public String getProfile_image ( ) {
-		
-		return profile_image;
-	}
-	
-	public char getGender ( ) {
-		
-		return gender;
-	}
-	
-	public String getEmail ( ) {
-		
-		return email;
-	}
-	
-	public String getPassword_hash ( ) {
-		
-		return password_hash;
-	}
-	
-	public boolean isActive ( ) {
-		
-		return isActive;
-	}
-	
-	public LocalDateTime getRegistered_at ( ) {
-		
-		return registered_at;
-	}
-	
-	public LocalDateTime getLast_login ( ) {
-		
-		return last_login;
-	}
-	
-	public String getBio ( ) {
-		
-		return bio;
-	}
-	
-	@JsonBackReference
-	public Set < Role > getRoles ( ) {
-		
-		return roles;
-	}
+	//@OneToMany ( fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "author" )
+	//private Set < Comment >
+	//  commentSet = new HashSet <> ( );
 	
 }

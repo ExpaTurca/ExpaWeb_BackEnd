@@ -3,8 +3,8 @@
  **************************************************************/
 package com.expastudios.blogweb.model;
 
-import com.expastudios.blogweb.entity.Comment;
 import com.expastudios.blogweb.entity.Post;
+import com.expastudios.blogweb.entity.Role;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -15,28 +15,34 @@ import java.util.*;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class ProfileDTO {
+public class UserDTO {
 	
 	private UUID id;
 	
-	private String first_name;
+	private String bio;
 	
-	private String last_name;
+	private String firstName;
+	
+	private String lastName;
 	
 	private String email;
 	
-	private String password_hash;
+	private String password;
 	
 	private char gender;
 	
-	private String profile_image;
+	private String profileImage;
 	
-	private LocalDateTime registered_at;
+	private LocalDateTime registeredAt;
 	
-	private boolean is_active;
+	private boolean isActive;
+	
+	private Set < Role > roleSet;
 	
 	private Set < Post > postSet = new HashSet <> ( );
 	
+	/*
 	private Set < Comment > commentSet = new HashSet <> ( );
+	*/
 	
 }

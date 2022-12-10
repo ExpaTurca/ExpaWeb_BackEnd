@@ -32,15 +32,17 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 public class CustomRequestFilter extends OncePerRequestFilter {
 	
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+	protected void doFilterInternal (
+	  HttpServletRequest request, HttpServletResponse response, FilterChain filterChain )
+	throws
+	ServletException,
+	IOException {
 		
-		if ( request
-		       .getServletPath ( )
-		       .equals ( "/login" ) || request
-			                             .getServletPath ( )
-			                             .equals ( "/api/user/new" ) || request
-			                                                              .getRequestURI ( )
-			                                                              .equals ( "/api/role/new" ) ) {
+		if (
+		  request.getServletPath ( ).equals ( "/login" )
+		  || request.getServletPath ( ).equals ( "/api/user/create" )
+		  || request.getRequestURI ( ).equals ( "/api/role/create" )
+		  || request.getServletPath ().equals ( "/api/role/adduser" ) ) {
 			filterChain.doFilter ( request, response );
 		} else {
 			final String authorization_header = request.getHeader ( AUTHORIZATION );
@@ -73,26 +75,24 @@ public class CustomRequestFilter extends OncePerRequestFilter {
 					  .getContext ( )
 					  .setAuthentication ( authenticationToken );
 					filterChain.doFilter ( request, response );
+				} catch ( Exception exc ) {
+					log.error ( "Error logging in: {} ", exc.getMessage ( ) );
+					response.setContentType ( MediaType.APPLICATION_JSON_VALUE );
+					response.setHeader ( "error", exc.getMessage ( ) );
+					response.setStatus ( FORBIDDEN.value ( ) );
+					Map < String, String > error = new HashMap <> ( );
+					error.put ( "error_message", exc.getMessage ( ) );
+					new ObjectMapper ( ).writeValue ( response.getOutputStream ( ), error );
 				}
-				catch(Exception exc) {
-					log.error("Error logging in: {} ", exc.getMessage());
-					response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-					response.setHeader("error", exc.getMessage());
-					response.setStatus(FORBIDDEN.value());
-					Map<String, String> error = new HashMap<>();
-					error.put("error_message", exc.getMessage());
-					new ObjectMapper().writeValue(response.getOutputStream(), error);
-				}
-			}
-			else {
-				String              error_message = "Token is missing";
-				Map<String, String> error         = new HashMap<>();
-				error.put("error_message", error_message);
+			} else {
+				String error_message = "Token is missing";
+				Map < String, String > error = new HashMap <> ( );
+				error.put ( "error_message", error_message );
 				
-				response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-				response.setHeader("error", error_message);
-				response.setStatus(FORBIDDEN.value());
-				new ObjectMapper().writeValue(response.getOutputStream(), error);
+				response.setContentType ( MediaType.APPLICATION_JSON_VALUE );
+				response.setHeader ( "error", error_message );
+				response.setStatus ( FORBIDDEN.value ( ) );
+				new ObjectMapper ( ).writeValue ( response.getOutputStream ( ), error );
 			}
 		}
 		

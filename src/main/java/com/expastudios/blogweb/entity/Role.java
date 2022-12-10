@@ -3,14 +3,13 @@
  **************************************************************/
 package com.expastudios.blogweb.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@Getter
 @Setter
 @RequiredArgsConstructor
 public class Role {
@@ -20,24 +19,8 @@ public class Role {
 	@SequenceGenerator ( name = "sequence", sequenceName = "SEQUENCE" )
 	private short id;
 	
-	private String roleName;
+	private String name;
 	
 	@ManyToMany ( fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "roles" ) private Set < User > users;
-	
-	public short getId ( ) {
-		
-		return id;
-	}
-	
-	public String getRoleName ( ) {
-		
-		return roleName;
-	}
-	
-	@JsonManagedReference
-	public Set < User > getUsers ( ) {
-		
-		return users;
-	}
 	
 }
