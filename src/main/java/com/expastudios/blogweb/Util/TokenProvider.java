@@ -92,13 +92,6 @@ public class TokenProvider {
 		         .asString ( );
 	}
 	
-	private static Date getExpireDate ( String token ) {
-		
-		return getClaim ( token )
-		         .get ( "exp" )
-		         .asDate ( );
-	}
-	
 	private static boolean isExpired ( String token ) {
 		
 		return getClaim ( token )

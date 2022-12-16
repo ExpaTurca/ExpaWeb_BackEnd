@@ -16,23 +16,51 @@ import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserServiceImp implements UserService {
+public class UserServiceImp implements UserService, UserDetailsService {
 	
 	@Autowired private UserRepository userRepository;
 	
 	@Autowired private RoleRepository roleRepository;
+	
+	@Override
+	public UserDetails loadUserByUsername ( String username ) {
+		
+		Optional < User > user = userRepository
+		                           .findByEmailAndIsActiveTrue ( username )
+		                           .stream ( )
+		                           .findFirst ( );
+		
+		Collection < SimpleGrantedAuthority > authorities = new ArrayList <> ( );
+		
+		user.ifPresentOrElse ( x -> x
+		                              .getRoleSet ( )
+		                              .forEach ( role -> {
+			                              authorities.add ( new SimpleGrantedAuthority ( role.getName ( ) ) );
+		                              } ), ( ) -> {
+			throw new UsernameNotFoundException ( "Username not found!" );
+		} );
+		System.out.println ( "usr: " + user.orElseThrow ( ) );
+		
+		return new org.springframework.security.core.userdetails.User (
+		  user
+			.orElseThrow ( )
+			.getEmail ( ), user
+			                 .get ( )
+			                 .getPassword ( ), authorities );
+	}
 	
 	@Override
 	public ResponseEntity < UserDTO > getUser ( String email ) {
@@ -53,13 +81,10 @@ public class UserServiceImp implements UserService {
 	
 	@Override
 	public ResponseEntity < ? > saveUser (
-	  UserDTO userDto, HttpServletRequest request, HttpServletResponse response )
-	throws
-	ClassNotFoundException {
+	  User user, HttpServletRequest request, HttpServletResponse response ) {
 		
 		try {
-			User user = ( User ) EntityDtoConversion.ConvertToEntity ( userDto );
-			user.setPassword ( PasswordEncryptor.Encrypt ( user.getPassword ( ) ) );
+			user.setPassword ( PasswordEncoder.encode ( user.getPassword ( ) ) );
 			user.setActive ( true );
 			user.setRegisteredAt ( Zone.getCurrentTime ( ) );
 			userRepository.save ( user );
@@ -73,16 +98,10 @@ public class UserServiceImp implements UserService {
 	}
 	
 	@Override
-	public ResponseEntity < ? > editUser ( UserDTO userDTO, HttpServletRequest request, HttpServletResponse response )
-	throws
-	ClassNotFoundException {
+	public ResponseEntity < Boolean > editUser ( User user, HttpServletRequest request, HttpServletResponse response ) {
 		
-		try {
-			User user = ( User ) EntityDtoConversion.ConvertToEntity ( userDTO );
-			userRepository.save ( user );
-		} catch ( HibernateException e ) {
-			throw new RuntimeException ( e );
-		}
+		userRepository.save ( user );
+		
 		return ResponseEntity
 		         .ok ( )
 		         .build ( );
@@ -96,16 +115,16 @@ public class UserServiceImp implements UserService {
 	}
 	
 	@Override
-	public ResponseEntity < ? > saveRole ( String name ) {
+	public ResponseEntity < Boolean > saveRole ( String name ) {
 		
 		Role roleEntity = new Role ( );
 		roleEntity.setName ( name );
 		roleRepository.save ( roleEntity );
-		return new ResponseEntity <> ( "success-message", HttpStatus.CREATED );
+		return new ResponseEntity <> ( true, HttpStatus.CREATED );
 	}
 	
 	@Override
-	public ResponseEntity < ? > deleteRole ( String name ) {
+	public ResponseEntity < Boolean > deleteRole ( String name ) {
 		
 		try {
 			Role roleEntity = roleRepository
@@ -116,11 +135,11 @@ public class UserServiceImp implements UserService {
 			throw new RuntimeException ( e );
 		}
 		
-		return new ResponseEntity <> ( "success-message", HttpStatus.OK );
+		return new ResponseEntity <> ( true, HttpStatus.OK );
 	}
 	
 	@Override
-	public ResponseEntity < ? > addRoleToUser ( UUID userId, String roleName ) {
+	public ResponseEntity < Boolean > addRoleToUser ( UUID userId, String roleName ) {
 		
 		Optional < User > user = userRepository.findByIdAndIsActiveTrue ( userId );
 		Optional < Role > roleEntity = roleRepository
@@ -130,23 +149,23 @@ public class UserServiceImp implements UserService {
 		
 		roleEntity
 		  .orElseThrow ( )
-		  .getUsers ( )
+		  .getUserSet ( )
 		  .add ( user.orElseThrow ( ) );
 		
 		user
 		  .orElseThrow ( )
-		  .getRoles ( )
+		  .getRoleSet ( )
 		  .add ( roleEntity.orElseThrow ( ) );
 		
 		userRepository.save ( user.orElseThrow ( ) );
 		roleRepository.save ( roleEntity.orElseThrow ( ) );
 		
 		log.info ( "New Role {} added to user!", roleName );
-		return new ResponseEntity <> ( "success-message", HttpStatus.CREATED );
+		return new ResponseEntity <> ( true, HttpStatus.CREATED );
 	}
 	
 	@Override
-	public ResponseEntity < ? > removeRoleFromUser ( UUID userId, String roleName ) {
+	public ResponseEntity < Boolean > removeRoleFromUser ( UUID userId, String roleName ) {
 		
 		Optional < User > user = userRepository.findByIdAndIsActiveTrue ( userId );
 		Optional < Role > roleEntity = roleRepository
@@ -156,18 +175,18 @@ public class UserServiceImp implements UserService {
 		
 		roleEntity
 		  .orElseThrow ( )
-		  .getUsers ( )
+		  .getUserSet ( )
 		  .remove ( user.orElseThrow ( ) );
 		
 		user
 		  .orElseThrow ( )
-		  .getRoles ( )
+		  .getRoleSet ( )
 		  .remove ( roleEntity.orElseThrow ( ) );
 		
 		userRepository.save ( user.orElseThrow ( ) );
 		roleRepository.save ( roleEntity.orElseThrow ( ) );
 		
-		return new ResponseEntity <> ( "success-message", HttpStatus.OK );
+		return new ResponseEntity <> ( true, HttpStatus.OK );
 	}
 	
 }

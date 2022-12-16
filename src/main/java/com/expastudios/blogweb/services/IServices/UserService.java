@@ -4,6 +4,7 @@
 package com.expastudios.blogweb.services.IServices;
 
 import com.expastudios.blogweb.entity.Role;
+import com.expastudios.blogweb.entity.User;
 import com.expastudios.blogweb.model.UserDTO;
 import org.springframework.http.ResponseEntity;
 
@@ -18,16 +19,11 @@ public interface UserService {
 	ResponseEntity < UserDTO > getUser ( String email );
 	
 	ResponseEntity < ? > saveUser (
-	  UserDTO user, HttpServletRequest request, HttpServletResponse response )
-	throws
-	ClassNotFoundException;
+	  User userEntity, HttpServletRequest request, HttpServletResponse response );
 	
-	ResponseEntity < ? > editUser ( UserDTO userDTO, HttpServletRequest request, HttpServletResponse response )
-	throws
-	ClassNotFoundException;
+	ResponseEntity < ? > editUser ( User userEntity, HttpServletRequest request, HttpServletResponse response );
 	
 	ResponseEntity < Role > getRole ( String roleName );
-	
 	
 	ResponseEntity < ? > saveRole ( String roleName );
 	

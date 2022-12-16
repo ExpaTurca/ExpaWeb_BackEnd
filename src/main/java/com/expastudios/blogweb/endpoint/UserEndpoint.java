@@ -3,6 +3,8 @@
  **************************************************************/
 package com.expastudios.blogweb.endpoint;
 
+import com.expastudios.blogweb.Util.EntityDtoConversion;
+import com.expastudios.blogweb.entity.User;
 import com.expastudios.blogweb.model.RoleDTO;
 import com.expastudios.blogweb.model.UserDTO;
 import com.expastudios.blogweb.services.IServices.UserService;
@@ -38,7 +40,7 @@ public class UserEndpoint {
     throws
     ClassNotFoundException {
     
-        return userService.saveUser ( userDTO, request, response );
+        return userService.saveUser ( ( User ) EntityDtoConversion.ConvertToEntity ( userDTO ), request, response );
     }
     
     public ResponseEntity < ? > EditUser (
@@ -46,7 +48,7 @@ public class UserEndpoint {
     throws
     ClassNotFoundException {
     
-        return userService.editUser ( userDTO, request, response );
+        return userService.editUser ( ( User ) EntityDtoConversion.ConvertToEntity ( userDTO ), request, response );
     }
     
     @PostMapping ( "/role/create" )

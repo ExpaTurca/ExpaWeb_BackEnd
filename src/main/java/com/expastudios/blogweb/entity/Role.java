@@ -3,10 +3,14 @@
  **************************************************************/
 package com.expastudios.blogweb.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
+
+
 
 @Entity
 @Getter
@@ -17,10 +21,12 @@ public class Role {
 	@Id
 	@GeneratedValue ( strategy = GenerationType.SEQUENCE, generator = "sequence" )
 	@SequenceGenerator ( name = "sequence", sequenceName = "SEQUENCE" )
-	private short id;
+	private int id;
 	
 	private String name;
 	
-	@ManyToMany ( fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "roles" ) private Set < User > users;
+	@JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class)
+	@ManyToMany(fetch =  FetchType.LAZY, cascade = {CascadeType.MERGE})
+	private Set < User > userSet;
 	
 }

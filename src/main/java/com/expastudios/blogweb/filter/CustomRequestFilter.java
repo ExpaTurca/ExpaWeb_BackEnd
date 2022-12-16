@@ -38,11 +38,16 @@ public class CustomRequestFilter extends OncePerRequestFilter {
 	ServletException,
 	IOException {
 		
-		if (
-		  request.getServletPath ( ).equals ( "/login" )
-		  || request.getServletPath ( ).equals ( "/api/user/create" )
-		  || request.getRequestURI ( ).equals ( "/api/role/create" )
-		  || request.getServletPath ().equals ( "/api/role/adduser" ) ) {
+		if ( request
+		       .getServletPath ( )
+		       .equals ( "/login" ) || request
+			                             .getServletPath ( )
+			                             .equals ( "/api/user/create" ) || request
+			                                                                 .getRequestURI ( )
+			                                                                 .equals ( "/api/role/create" ) || request
+				                                                                                                 .getServletPath ( )
+				                                                                                                 .equals (
+				                                                                                                   "/api/role/adduser" ) ) {
 			filterChain.doFilter ( request, response );
 		} else {
 			final String authorization_header = request.getHeader ( AUTHORIZATION );
@@ -57,6 +62,8 @@ public class CustomRequestFilter extends OncePerRequestFilter {
 					DecodedJWT decodedJWT = verifier.verify ( token );
 					
 					String username = decodedJWT.getSubject ( );
+					
+					System.out.println ("roles: " + decodedJWT.getClaim ( "roles" ) );
 					
 					String[] roles = decodedJWT
 					                   .getClaim ( "roles" )
@@ -74,6 +81,7 @@ public class CustomRequestFilter extends OncePerRequestFilter {
 					SecurityContextHolder
 					  .getContext ( )
 					  .setAuthentication ( authenticationToken );
+					
 					filterChain.doFilter ( request, response );
 				} catch ( Exception exc ) {
 					log.error ( "Error logging in: {} ", exc.getMessage ( ) );
@@ -85,7 +93,7 @@ public class CustomRequestFilter extends OncePerRequestFilter {
 					new ObjectMapper ( ).writeValue ( response.getOutputStream ( ), error );
 				}
 			} else {
-				String error_message = "Token is missing";
+				String error_message = "Token is missing!";
 				Map < String, String > error = new HashMap <> ( );
 				error.put ( "error_message", error_message );
 				
