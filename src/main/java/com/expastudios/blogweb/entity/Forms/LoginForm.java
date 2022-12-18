@@ -1,17 +1,17 @@
 /***************************************************************
  * Copyright (c) 2022
  **************************************************************/
-package com.expastudios.blogweb.model;
+package com.expastudios.blogweb.entity.Forms;
 
 import lombok.*;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class NewPasswordDTO {
-	
-	private String current_password;
-	
-	private String new_password;
-	
+public class LoginForm {
+
+    private String username;
+
+    private String password;
+
 }

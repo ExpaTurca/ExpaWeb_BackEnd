@@ -16,8 +16,7 @@ import java.util.UUID;
 
 
 @Repository
-public interface CommentRepository extends JpaRepository< Comment, UUID > {
-	
-	Optional < Comment > findByIdAndIsActiveTrue ( UUID id );
-	
+public interface CommentRepository extends JpaRepository<Comment, UUID> {
+
+	Optional<Comment> findByIdAndDeleteFlagFalse(UUID id);
 }

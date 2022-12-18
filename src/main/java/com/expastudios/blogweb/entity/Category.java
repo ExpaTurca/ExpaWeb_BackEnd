@@ -1,24 +1,23 @@
 /***************************************************************
  * Copyright (c) 2022
  **************************************************************/
+
+
 package com.expastudios.blogweb.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
-
 @Entity
+@Table(name = "category")
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class Role {
+public class Category {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence")
@@ -26,10 +25,17 @@ public class Role {
 	private int id;
 
 	@NotNull
-	private String name;
+	@Size(max = 64)
+	private String title;
 
-	@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
-	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
-	private Set<User> userSet;
+	@Size(max = 96)
+	private String metaTitle;
+
+	@NotNull
+	@Size(max = 512)
+	private String content;
+
+	@ManyToMany(cascade = {CascadeType.MERGE}, mappedBy = "categorySet")
+	private Set<Post> post;
 
 }

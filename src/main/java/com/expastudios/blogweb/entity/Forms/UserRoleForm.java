@@ -1,21 +1,19 @@
 /***************************************************************
  * Copyright (c) 2022
  **************************************************************/
-package com.expastudios.blogweb.model;
+package com.expastudios.blogweb.entity.Forms;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.UUID;
-
-
 
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class RoleDTO {
-	
-	private UUID userId;
-	
-	private String roleName;
-	
+public class UserRoleForm {
+
+    private UUID userId;
+    private String roleName;
 }

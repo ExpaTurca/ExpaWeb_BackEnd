@@ -28,7 +28,7 @@ public class EntityDtoConversion{
 	ClassNotFoundException {
 		
 		/* DTO to Entity Mapping */
-		return modelMapper.map ( dto, Class.forName ( GetEntityPath ( dto ) ) );
+ 		return modelMapper.map(dto, Class.forName(GetEntityPath(dto)));
 	}
 	
 	public static < T > Object ConvertToDTO ( T entity )

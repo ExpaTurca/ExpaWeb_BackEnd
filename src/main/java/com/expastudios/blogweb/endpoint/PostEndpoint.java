@@ -5,7 +5,7 @@ package com.expastudios.blogweb.endpoint;
 
 import com.expastudios.blogweb.Util.EntityDtoConversion;
 import com.expastudios.blogweb.entity.Post;
-import com.expastudios.blogweb.model.PostDTO;
+import com.expastudios.blogweb.entity.DTOs.PostDTO;
 import com.expastudios.blogweb.services.IServices.PostService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +25,15 @@ import java.util.stream.Collectors;
 public class PostEndpoint {
 	
 	@Autowired private PostService postService;
-	
-	@GetMapping ( "/post?postId={Id}" )
-	public Optional < PostDTO > getPost (
-	  @PathVariable ( value = "Id" ) String postId )
+
+    @GetMapping("/post")
+	public Optional < PostDTO > getPost(
+            @RequestParam String postId)
 	throws
 	ClassNotFoundException {
-		
-		return Optional.of (
-		  ( PostDTO ) EntityDtoConversion.ConvertToDTO ( postService.getPost ( UUID.fromString ( postId ) ) ) );
+
+        return Optional.of(
+                (PostDTO) EntityDtoConversion.ConvertToDTO(postService.getPost(UUID.fromString(postId)).orElseThrow()));
 	}
 	
 	@GetMapping ( "/post/list" )

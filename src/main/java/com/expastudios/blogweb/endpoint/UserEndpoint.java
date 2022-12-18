@@ -4,9 +4,9 @@
 package com.expastudios.blogweb.endpoint;
 
 import com.expastudios.blogweb.Util.EntityDtoConversion;
+import com.expastudios.blogweb.entity.DTOs.UserDTO;
+import com.expastudios.blogweb.entity.Forms.UserRoleForm;
 import com.expastudios.blogweb.entity.User;
-import com.expastudios.blogweb.model.RoleDTO;
-import com.expastudios.blogweb.model.UserDTO;
 import com.expastudios.blogweb.services.IServices.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,15 +56,15 @@ public class UserEndpoint {
     
         return userService.saveRole ( roleName );
     }
-    
-    @PostMapping ( "/role/adduser" )
-    public ResponseEntity < ? > AddRoleToUser (
-      @RequestBody RoleDTO roleDTO ) {
-    
-        UUID userId = roleDTO.getUserId ( );
-    
-        String roleName = roleDTO.getRoleName ( );
-        return userService.addRoleToUser ( userId, roleName );
+
+    @PostMapping("/role/adduser")
+    public ResponseEntity<?> AddRoleToUser(
+            @RequestBody UserRoleForm userRoleForm) {
+
+        UUID userId = userRoleForm.getUserId();
+
+        String roleName = userRoleForm.getRoleName();
+        return userService.addRoleToUser(userId, roleName);
     }
     
     public ResponseEntity < ? > RemoveRole ( String roleName ) {

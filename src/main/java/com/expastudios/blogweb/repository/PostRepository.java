@@ -16,5 +16,5 @@ import java.util.UUID;
 
 public interface PostRepository extends CrudRepository< Post, UUID > {
 	
-	Optional < Post > findByIdAndIsActiveTrue ( UUID id );
+	Optional<Post> findByIdAndDeleteFlagFalse(UUID id);
 	}

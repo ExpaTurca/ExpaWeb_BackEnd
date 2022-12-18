@@ -5,7 +5,7 @@ package com.expastudios.blogweb.services.IServices;
 
 import com.expastudios.blogweb.entity.Role;
 import com.expastudios.blogweb.entity.User;
-import com.expastudios.blogweb.model.UserDTO;
+import com.expastudios.blogweb.entity.DTOs.UserDTO;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;

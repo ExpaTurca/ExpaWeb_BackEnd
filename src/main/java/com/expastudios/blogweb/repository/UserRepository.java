@@ -15,11 +15,11 @@ import java.util.UUID;
 
 
 
-public interface UserRepository extends JpaRepository < User, UUID > {
-	
-	Optional < User > findByEmailAndIsActiveTrue (
-	  @NonNull String eMail );
-	
-	Optional < User > findByIdAndIsActiveTrue ( UUID id );
-	
+public interface UserRepository extends JpaRepository<User, UUID> {
+
+	Optional<User> findByEmailAndDeleteFlagFalse(
+			@NonNull String eMail);
+
+	Optional<User> findByIdAndDeleteFlagFalse(UUID id);
+
 }
