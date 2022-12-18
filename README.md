@@ -15,7 +15,7 @@ http://localhost:8080/
 }
 </p>  
 
-# *UserEndpoint Class
+# UserEndpoint Class
 <div>
 <h1><u>New User</u></h1>
 http://localhost:8080/api/user/new
@@ -39,8 +39,7 @@ http://localhost:8080/api/user/new
 }
 </p>
 </div>
-
-
+ 
 <div>
 <h1><u>New Role</u></h1>
 http://localhost:8080/api/role/new
@@ -65,7 +64,7 @@ http://localhost:8080/api/role/new
 <br>
 { 
 <br>
-    "email" = "user@mail.com",
+    "userId" = "User Id",
 <br>
     "roleName"= "ROLE_USER"
 <br>
@@ -74,7 +73,7 @@ http://localhost:8080/api/role/new
 
 </div>
 
-# *PostEndpoint Class
+# PostEndpoint Class
 <div>
 <h1><u>New Post</u></h1>
 http://localhost:8080/api/post/new
@@ -84,19 +83,19 @@ http://localhost:8080/api/post/new
 <br>
 { 
 <br>
-    title = Post Title
+    "title"= "Post Title"
 <br>
-    metaTitle = Keywords For SEO Optimization
+    "metaTitle"= "Keywords For SEO Optimization"
 <br>
     "tag": "Science,History",
 <br>
-    "content" = "Post Content"
+    "content"= "Post Content"
 <br>
 }
 </p>
 </div>
 
-# *TagEndpoint Class
+# TagEndpoint Class
 <div>
 <h1><u>New Tag</u></h1>
 http://localhost:8080/api/tag/new
@@ -106,8 +105,8 @@ http://localhost:8080/api/tag/new
 {
 <br>
     "title"= "Tag Name",
-    "metaTitle" = "Keywords for SEO Optimization",
-    "content" = "Tag Description"
+    "metaTitle"= "Keywords for SEO Optimization",
+    "content"= "Tag Description"
 <br>
 }
 </p>
