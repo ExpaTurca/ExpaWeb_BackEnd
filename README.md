@@ -15,7 +15,7 @@ http://localhost:8080/
 }
 </p>  
 
-#*UserEndpoint Class
+# *UserEndpoint Class
 <div>
 <h1><u>New User</u></h1>
 http://localhost:8080/api/user/new
@@ -74,7 +74,7 @@ http://localhost:8080/api/role/new
 
 </div>
 
-#*PostEndpoint Class
+# *PostEndpoint Class
 <div>
 <h1><u>New Post</u></h1>
 http://localhost:8080/api/post/new
@@ -96,7 +96,7 @@ http://localhost:8080/api/post/new
 </p>
 </div>
 
-#*TagEndpoint Class
+# *TagEndpoint Class
 <div>
 <h1><u>New Tag</u></h1>
 http://localhost:8080/api/tag/new
