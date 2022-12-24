@@ -1,10 +1,4 @@
-# *ExpaWeb BackEnd API
-
-<div>
-<h1><u>Home</u></h1>
-http://localhost:8080/
-</div>
-
+# *ExpaWeb BackEnd API Request Forms
 <div>
 <h1><u>Login</u></h1>
 http://localhost:8080/
@@ -14,27 +8,14 @@ http://localhost:8080/
 <br>
 { 
 <br>
-    username = user@mail.com,
+    "username"= "user@mail.com",
     <br>
-    password = password
+    "password"= "password"
 <br>
 }
 </p>  
 
-</div>
-
-<div>
-<h1><u>Logout</u></h1>
-http://localhost:8080/login?logout
-</div>
-
-#*UserEndpoint Class
-<div>
-<h1><u>Profile</u></h1>
-http://localhost:8080/api/user/{userID}
-
-</div>
-
+# UserEndpoint Class
 <div>
 <h1><u>New User</u></h1>
 http://localhost:8080/api/user/new
@@ -46,23 +27,19 @@ http://localhost:8080/api/user/new
 <br>
 "email": "user@mail.com",
 <br>
+"username": "username",
+<br>
 "password": "Password",
 <br>
-"firstName": "Your Name",
+"firstName": "First Name",
 <br>
-"lastName": "Your Family Name",
+"lastName": "Last Name",
 <br>
-"gender": "M for Male, F for Female",
-<br>
-"imageUrl": "profile.jpg",
-<br>
-<"roleName": "Role_*"
-
+"gender": "M - F"
 }
 </p>
 </div>
-
-
+ 
 <div>
 <h1><u>New Role</u></h1>
 http://localhost:8080/api/role/new
@@ -71,7 +48,7 @@ http://localhost:8080/api/role/new
 <br>
 { 
 <br>
-    roleName= ROLE_*
+    "roleName"= "ROLE_USER"
 <br>
 }
 </p> 
@@ -87,31 +64,17 @@ http://localhost:8080/api/role/new
 <br>
 { 
 <br>
-    email = user@mail.com,
+    "userId" = "User Id",
 <br>
-    roleName= ROLE_*
+    "roleName"= "ROLE_USER"
 <br>
 }
 </p>                 
 
 </div>
 
-
+# PostEndpoint Class
 <div>
-<h1><u>Get Post</u></h1>
-http://localhost:8080/api/post/{postID}
-
-</div>
-
-
-#*PostEndpoint Class
-<div>
-<h1><u>Get User's Posts</u></h1>
-http://localhost:8080/api/post/get/{userID}&pg={pageNumber}
-
-</div>
-
- <div>
 <h1><u>New Post</u></h1>
 http://localhost:8080/api/post/new
 
@@ -120,35 +83,19 @@ http://localhost:8080/api/post/new
 <br>
 { 
 <br>
-    title = Post Title
+    "title"= "Post Title"
 <br>
-    metaTitle = Keywords For SEO Optimization
+    "metaTitle"= "Keywords For SEO Optimization"
 <br>
-    summary = Summary
+    "tag": "Science,History",
 <br>
-    content = Post
+    "content"= "Post Content"
 <br>
 }
 </p>
 </div>
 
-<div>
-<h1><u>Edit Post</u></h1>
-http://localhost:8080/api/post/edit
-</div>
-
-<div>
-<h1><u>Delete Post</u></h1>
-http://localhost:8080/api/post/remove/{id}
-</div>
-
-
-#*TagEndpoint Class
-<div>
-<h1><u>Get Tag</u></h1>
-http://localhost:8080/api/tag/{tagID}
-</div>
-
+# TagEndpoint Class
 <div>
 <h1><u>New Tag</u></h1>
 http://localhost:8080/api/tag/new
@@ -157,20 +104,10 @@ http://localhost:8080/api/tag/new
 <br>
 {
 <br>
-    title = Tag Name,
-    metaTitle = Keyword for SEO Optimization,
-    content = Tag Description
+    "title"= "Tag Name",
+    "metaTitle"= "Keywords for SEO Optimization",
+    "content"= "Tag Description"
 <br>
 }
 </p>
-</div>
-
-<div>
-<h1><u>Edit Tag</u></h1>
-http://localhost:8080/api/tag/edit
-</div>
-
-<div>
-<h1><u>Delete Tag</u></h1>
-http:localhost:8080/api/tag/delete
 </div>
