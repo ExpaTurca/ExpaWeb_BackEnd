@@ -7,13 +7,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class UserRoleForm {
+public class NewTagForm {
+    private String tagName;
 
-    private UUID userId;
-    private String roleName;
 }

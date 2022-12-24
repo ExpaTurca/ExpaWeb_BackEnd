@@ -1,27 +1,22 @@
 /***************************************************************
  * Copyright (c) 2022
  **************************************************************/
+package com.expastudios.blogweb.entity.Forms;
 
-
-package com.expastudios.blogweb.entity.DTOs;
-
-import com.expastudios.blogweb.entity.Post;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
-
-
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class CategoryDTO {
+public class NewPostForm {
 
-    private int id;
+    private String title;
 
-    private String name;
+    private String metaTitle;
 
-    private Set<Post> postSet = new java.util.LinkedHashSet<>();
+    private String content;
 
+    private String categoryName;
 }

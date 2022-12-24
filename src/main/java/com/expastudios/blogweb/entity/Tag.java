@@ -6,17 +6,20 @@
 
 package com.expastudios.blogweb.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.Set;
 
 
-
-@Entity
-@Table(name = "tag")
+@Entity(name = "e_tag")
+@Table(name = "t_tag", schema = "public")
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -26,11 +29,8 @@ public class Tag {
 	@GeneratedValue
 	private short id;
 
+	@NotNull
 	@Size(max = 32)
 	private String name;
-
-	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "tagSet")
-	private Set<Post>
-			postSet = new HashSet<>();
 
 }

@@ -18,41 +18,40 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
-
 
 
 @RestController
 @RequestMapping(value = "/api")
 @RequiredArgsConstructor
 public class CommentEndpoint {
-	
-	@Autowired private final CommentService commentService;
-	
-	@GetMapping ( value = "/comment/get" )
-	public Optional < CommentDTO > getComment ( UUID commentId )
-	throws
-	ClassNotFoundException {
-		
-		return Optional.of (
-		  ( CommentDTO ) EntityDtoConversion.ConvertToDTO ( commentService.getComment ( commentId ) ) );
-	}
+
+    @Autowired
+    private final CommentService commentService;
+
+    @GetMapping(value = "/comment/get")
+    public Optional<CommentDTO> getComment(UUID commentId) throws ClassNotFoundException {
+
+        return Optional.of(
+                (CommentDTO) EntityDtoConversion.ConvertToDTO(commentService.getComment(commentId)));
+    }
+
+    @GetMapping(value = "/comment/by/post")
+    public Set<?> getCommentByPost(UUID postId, int pageNumber) {
+        return commentService.getCommentByPost(postId, pageNumber);
+    }
 
     @PostMapping(value = "/comment/create", consumes = {"application/json"})
-	public ResponseEntity < ? > createComment(
-            @RequestParam String postId, @RequestBody CommentDTO commentDTO, HttpServletRequest request,
-            HttpServletResponse response)
-	throws
-	ClassNotFoundException {
+    public ResponseEntity<?> createComment(@RequestParam String postId, @RequestBody CommentDTO commentDTO, HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException {
 
-        return commentService.createComment ( UUID.fromString (postId),
-		                                      ( Comment ) EntityDtoConversion.ConvertToEntity ( commentDTO ), request, response );
-	}
-	
-	public ResponseEntity < Boolean > removeComment (UUID commentId, HttpServletRequest request,
-	                                           HttpServletResponse response ) {
-		
-		return commentService.removeComment ( commentId, request, response );
-	}
-	
+        return commentService.createComment(UUID.fromString(postId), (Comment) EntityDtoConversion.ConvertToEntity(commentDTO), request, response);
+    }
+
+    @PostMapping(value = "/comment/remove")
+    public ResponseEntity<?> removeComment(UUID commentId, HttpServletRequest request, HttpServletResponse response) {
+
+        return commentService.removeComment(commentId, request, response);
+    }
+
 }

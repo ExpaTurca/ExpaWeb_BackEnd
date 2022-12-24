@@ -6,7 +6,12 @@
 
 package com.expastudios.blogweb.entity.DTOs;
 
-import lombok.*;
+import com.expastudios.blogweb.entity.Comment;
+import com.expastudios.blogweb.entity.Post;
+import com.expastudios.blogweb.entity.User;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -25,15 +30,12 @@ public class CommentDTO {
 
     private LocalDateTime updatedAt;
 
-    private LocalDateTime publishedAt;
+    private User author;
 
-    private UserDTO author;
+    private Post post;
 
-    private PostDTO post;
+    private Comment parent;
 
-    private CommentDTO parent;
-
-    private boolean deleteFlag;
 
     private boolean published;
 

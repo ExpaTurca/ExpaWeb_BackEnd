@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2022
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <project version="4">
-  <component name="JpaPluginProjectSettings" dtoSerializableType="1">
-    <option name="entityNameTemplate" value="${className}" />
-    <option name="tableNameTemplate" value="${className}" />
-    <option name="columnNameTemplate" value="${fieldName}" />
-    <option name="useConstantsForEntities" value="true" />
-    <option name="isLombokGetterAndSetter" value="true" />
-    <option name="useLazyOnToOneAssociations" value="true" />
-    <option name="scaffoldingLanguage" />
-  </component>
+    <component name="JpaPluginProjectSettings" dtoSerializableType="1">
+        <option name="entityNameTemplate" value="e_${className}"/>
+        <option name="tableNameTemplate" value="e${className}"/>
+        <option name="columnNameTemplate" value="${fieldName}"/>
+        <option name="useConstantsForEntities" value="true"/>
+        <option name="isLombokGetterAndSetter" value="true"/>
+        <option name="useLazyOnToOneAssociations" value="true"/>
+        <option name="scaffoldingLanguage"/>
+    </component>
 </project>

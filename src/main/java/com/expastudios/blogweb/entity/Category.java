@@ -5,15 +5,17 @@
 
 package com.expastudios.blogweb.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
-@Entity
-@Table(name = "category")
+@Entity(name = "e_category")
+@Table(name = "t_category", schema = "public")
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -22,20 +24,12 @@ public class Category {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence")
 	@SequenceGenerator(name = "sequence", sequenceName = "SEQUENCE")
-	private int id;
+	private short id;
 
 	@NotNull
-	@Size(max = 64)
-	private String title;
+	@Size(max = 32)
+	private String name;
 
-	@Size(max = 96)
-	private String metaTitle;
-
-	@NotNull
-	@Size(max = 512)
-	private String content;
-
-	@ManyToMany(cascade = {CascadeType.MERGE}, mappedBy = "categorySet")
-	private Set<Post> post;
-
+	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "category")
+	private Set<Post> post = new java.util.LinkedHashSet<>();
 }

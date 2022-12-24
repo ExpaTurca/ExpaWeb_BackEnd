@@ -6,9 +6,11 @@
 
 package com.expastudios.blogweb.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -16,23 +18,23 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Set;
+import java.util.UUID;
 
 
-
-@Entity
-@Table(name = "post")
-@Getter @Setter @RequiredArgsConstructor
-@JsonIdentityInfo ( generator = ObjectIdGenerators.UUIDGenerator.class, property = "id" )
+@Entity(name = "e_post")
+@Table(name = "t_post", schema = "public")
+@Getter
+@Setter
+@RequiredArgsConstructor
 public class Post {
 
 	@Id
-	@GeneratedValue(generator = "UUID")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator", parameters = {
 			@org.hibernate.annotations.Parameter(name = "uuid_gen_strategy_class",
 					value = "org.hibernate.id.uuid.CustomVersionOneStrategy")})
-	@Column(name = "id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
-	//@Type ( type = "uuid-char" )
+	@Column(nullable = false, insertable = false, updatable = false, columnDefinition = "VARCHAR(36)")
 	private UUID id;
 
 	@NotNull
@@ -53,38 +55,24 @@ public class Post {
 	private LocalDateTime createdAt;
 
 	@UpdateTimestamp()
-	private LocalDateTime publishedAt;
-
-	@UpdateTimestamp()
 	private LocalDateTime updatedAt;
 
-	@ManyToMany(cascade = {CascadeType.MERGE})
-	@JoinTable(name = "PostCategory", joinColumns = {@JoinColumn(name = "postId")}, inverseJoinColumns =
-			{@JoinColumn(name = "categoryId")})
-	private Set<Category> categorySet;
-
-	@ManyToMany(cascade = {CascadeType.MERGE})
-	@JoinTable(name = "PostTag", joinColumns = {@JoinColumn(name = "postId")}, inverseJoinColumns =
-			{@JoinColumn(name = "tagId")})
-	private Set<Tag> tagSet = new HashSet<>();
-
 	@NotNull
 	@ManyToOne
-	@JoinColumn(name = "authorId")
+	@JoinColumn(name = "categoryId")
+	private Category category;
+
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_id")
+	@Fetch(FetchMode.SELECT)
 	private User author;
 
-	@ManyToOne
-	@JoinColumn(name = "parentId")
-	private Post parent;
-
-	@OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL})
-	private Set<Comment> commentSet = new HashSet<>();
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@Fetch(FetchMode.JOIN)
+	private Set<Comment> commentSet = new java.util.LinkedHashSet<>();
 
 	@NotNull
-	@Column(columnDefinition = "boolean default 0")
-	private boolean deleteFlag;
-
-	@NotNull
-	@Column(columnDefinition = "boolean default 0")
+	@Column(columnDefinition = "boolean default true")
 	private boolean isPublished;
 }

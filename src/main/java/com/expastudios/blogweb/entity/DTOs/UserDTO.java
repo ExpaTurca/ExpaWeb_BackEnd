@@ -3,7 +3,8 @@
  **************************************************************/
 package com.expastudios.blogweb.entity.DTOs;
 
-import com.expastudios.blogweb.entity.Role;
+import com.expastudios.blogweb.entity.Comment;
+import com.expastudios.blogweb.entity.Post;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -34,9 +35,11 @@ public class UserDTO {
 
     private LocalDateTime lastLogin;
 
-    private Set<Role> roleSet;
+//    private Set<Role> roleSet;
 
-    private Set<PostDTO> postSet;
+    private Set<Post> postSet = new java.util.LinkedHashSet<>();
 
-    private Set<CommentDTO> commentSet;
+    private Set<Comment> commentSet = new java.util.LinkedHashSet<>();
+
+    private boolean isActive;
 }

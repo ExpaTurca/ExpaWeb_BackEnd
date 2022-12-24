@@ -6,9 +6,10 @@
 
 package com.expastudios.blogweb.entity.DTOs;
 
-import com.expastudios.blogweb.entity.Category;
-import com.expastudios.blogweb.entity.Tag;
-import lombok.*;
+import com.expastudios.blogweb.entity.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -31,24 +32,24 @@ public class PostDTO {
     //Post Data
     private String content;
 
+    private LocalDateTime createdAt;
+
     private LocalDateTime publishedAt;
 
     private LocalDateTime updatedAt;
 
-    private Set<Category> categorySet;
+    private Set<Category> categorySet = new java.util.LinkedHashSet<>();
 
-    private Set<Tag> tagSet;
+    private Set<Tag> tagSet = new java.util.LinkedHashSet<>();
 
     //Author
-    private UserDTO author;
+    private User author;
 
     //Parent
-    private PostDTO parent;
+    private Post parent;
 
     //Comments
-    private Set<CommentDTO> commentSet;
+    private Set<Comment> commentSet = new java.util.LinkedHashSet<>();
 
-    private boolean deleteFlag;
-
-    private boolean isPublished;
+    private boolean published;
 }

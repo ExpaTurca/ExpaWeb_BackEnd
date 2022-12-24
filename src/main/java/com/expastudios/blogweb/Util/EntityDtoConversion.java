@@ -3,7 +3,9 @@
  **************************************************************/
 package com.expastudios.blogweb.Util;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,34 +13,34 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class EntityDtoConversion{
-	
-	@Autowired private static final ModelMapper modelMapper = new ModelMapper ( );
-	
-	private static final String DtoPath = "com.expastudios.blogweb.model";
-	
-	private static final String EntityPath = "com.expastudios.blogweb.entity";
-	
-	public static <T> Object ConvertToEntity ( T dto )
-	throws
-	ClassNotFoundException {
-		
-		/* DTO to Entity Mapping */
- 		return modelMapper.map(dto, Class.forName(GetEntityPath(dto)));
-	}
-	
-	public static < T > Object ConvertToDTO ( T entity )
-	throws
-	ClassNotFoundException {
-		/* Entity To DTO Mapping */
-		return modelMapper.map ( entity, Class.forName ( GetDtoPath ( entity ) ) );
-	}
-	
-	private static int LastIndex ( Object entity ) {
+public class EntityDtoConversion {
+
+    @Autowired
+    private static final ModelMapper modelMapper = new ModelMapper();
+
+    private static final String DtoPath = "com.expastudios.blogweb.entity.DTOs";
+
+    private static final String EntityPath = "com.expastudios.blogweb.entity";
+
+    public static <T> Object ConvertToEntity(T dto)
+            throws
+            ClassNotFoundException {
+
+        /* DTO to Entity Mapping */
+        return modelMapper.map(dto, Class.forName(GetEntityPath(dto)));
+    }
+
+    public static <T> Object ConvertToDTO(T entity)
+            throws
+            ClassNotFoundException {
+        /* Entity To DTO Mapping */
+        return modelMapper.map(entity, Class.forName(GetDtoPath(entity)));
+    }
+
+    private static int LastIndex(Object entity) {
 		
 		return entity
 		         .getClass ( )

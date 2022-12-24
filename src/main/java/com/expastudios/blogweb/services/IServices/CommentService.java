@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 
 
@@ -26,7 +28,7 @@ public interface CommentService {
 	
 	ResponseEntity < ? > editComment (
 	  UUID commentId, Comment commentEntity, HttpServletRequest request, HttpServletResponse response );
-	
-	ResponseEntity < Boolean > removeComment ( UUID Id, HttpServletRequest request, HttpServletResponse response );
+
+	ResponseEntity<?> removeComment(UUID Id, HttpServletRequest request, HttpServletResponse response);
 	
 }

@@ -8,7 +8,6 @@ package com.expastudios.blogweb.repository;
 
 import com.expastudios.blogweb.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.lang.NonNull;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -17,9 +16,10 @@ import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-	Optional<User> findByEmailAndDeleteFlagFalse(
-			@NonNull String eMail);
+    Optional<User> findByIdAndIsActiveTrue(UUID Id);
 
-	Optional<User> findByIdAndDeleteFlagFalse(UUID id);
+    Optional<User> findByEmailAndIsActiveTrue(String email);
+
+    Optional<User> findByUsernameAndIsActiveTrue(String username);
 
 }
