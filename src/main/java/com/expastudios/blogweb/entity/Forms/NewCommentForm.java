@@ -4,17 +4,15 @@
 package com.expastudios.blogweb.entity.Forms;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.UUID;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
-public class NewPostForm {
-
-    private String title;
-
-    private String metaTitle;
-
-    private String content;
+@RequestMapping
+public class NewCommentForm {
+    private UUID postId;
+    private String comment;
 }

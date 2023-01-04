@@ -1,27 +1,30 @@
 /***************************************************************
- * Copyright (c) 2022
+ * Copyright (c) 2022-2023
  **************************************************************/
-
-
 package com.expastudios.blogweb.entity.DTOs;
 
-import com.expastudios.blogweb.entity.Post;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class CategoryDTO {
+public class AccountDTO {
 
-    private int id;
+    private UUID id;
 
-    private String name;
+    private String firstName;
 
-    private Set<Post> postSet = new java.util.LinkedHashSet<>();
+    private String lastName;
 
+    private String email;
+
+    private String username;
+
+    private LocalDateTime registeredAt;
 }

@@ -1,45 +1,54 @@
 /***************************************************************
- * Copyright (c) 2022
+ * Copyright (c) 2022-2023
  **************************************************************/
 package com.expastudios.blogweb.endpoint;
 
 import com.expastudios.blogweb.Util.EntityDtoConversion;
-import com.expastudios.blogweb.entity.DTOs.UserDTO;
+import com.expastudios.blogweb.entity.Account;
+import com.expastudios.blogweb.entity.DTOs.AccountDTO;
 import com.expastudios.blogweb.entity.Forms.NewUserForm;
-import com.expastudios.blogweb.entity.User;
-import com.expastudios.blogweb.services.IServices.UserService;
+import com.expastudios.blogweb.services.AccountService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.server.PathParam;
+import java.util.UUID;
 
 
 @RestController
-@RequestMapping(value = "/api", consumes = {"application/xml", "application/json"})
+@RequestMapping(value = "/api/user", consumes = {"application/xml", "application/json"})
 @RequiredArgsConstructor
 public class UserEndpoint {
 
-    @Autowired
-    private final UserService userService;
+    private final AccountService accountService;
 
-    @GetMapping(value = "/user")
-    public ResponseEntity<?> Index(@RequestParam String username, HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException {
-
-        return userService.getUser(username);
+    @GetMapping(value = "/getall")
+    public Page<AccountDTO> getall(@PathParam(value = "pg") int pg, @PathParam(value = "sz") int sz, HttpServletRequest request, HttpServletResponse response) {
+        return accountService.getAll(pg, sz);
     }
 
-    @PostMapping(value = "/user/create")
-    public ResponseEntity<?> NewUser(@RequestBody NewUserForm userForm, HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException {
+    @GetMapping(value = "/{Id}")
+    public AccountDTO Index(@PathVariable UUID Id,
+                            HttpServletRequest request,
+                            HttpServletResponse response) throws ClassNotFoundException {
 
-        return userService.saveUser(userForm, request, response);
+        return accountService.getById(Id);
     }
 
-    @PostMapping(value = "/user/edit")
-    public ResponseEntity<?> EditUser(@RequestBody UserDTO userDTO, HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException {
+    @PostMapping(value = "/create")
+    public String NewUser(@RequestBody NewUserForm userForm) throws ClassNotFoundException {
 
-        return userService.editUser((User) EntityDtoConversion.ConvertToEntity(userDTO), request, response);
+        return accountService.create(userForm);
+    }
+
+    @PostMapping(value = "/edit")
+    public String EditUser(@RequestBody AccountDTO accountDTO,
+                           HttpServletRequest request,
+                           HttpServletResponse response) throws ClassNotFoundException {
+
+        return accountService.edit((Account) EntityDtoConversion.ConvertToEntity(accountDTO), request, response);
     }
 }

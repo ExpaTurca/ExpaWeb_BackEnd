@@ -1,5 +1,5 @@
 /***************************************************************
- * Copyright (c) 2022
+ * Copyright (c) 2022-2023
  **************************************************************/
 
 
@@ -10,15 +10,17 @@ import com.expastudios.blogweb.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Set;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, UUID> {
+    List<Comment> findByIsPublishedTrue();
 
-    Set<Comment> findByPost_Id(UUID id);
 
-    Set<Comment> findByAuthor_IdAndAuthor_IsActiveTrue(UUID id);
+    List<Comment> findByPost_IdAndPost_IsPublishedTrue(UUID postId);
 
+    Optional<Comment> findByIdAndIsPublishedTrue(UUID commentId);
 }

@@ -1,57 +1,51 @@
 /***************************************************************
- * Copyright (c) 2022
+ * Copyright (c) 2022-2023
  **************************************************************/
 
 
 
 package com.expastudios.blogweb.endpoint;
 
-import com.expastudios.blogweb.Util.EntityDtoConversion;
-import com.expastudios.blogweb.entity.Comment;
 import com.expastudios.blogweb.entity.DTOs.CommentDTO;
-import com.expastudios.blogweb.services.IServices.CommentService;
+import com.expastudios.blogweb.entity.Forms.NewCommentForm;
+import com.expastudios.blogweb.entity.Forms.RequestFromUUID;
+import com.expastudios.blogweb.services.CommentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
-import java.util.Set;
+import javax.websocket.server.PathParam;
 import java.util.UUID;
 
 
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/api/comment")
 @RequiredArgsConstructor
 public class CommentEndpoint {
 
-    @Autowired
     private final CommentService commentService;
 
-    @GetMapping(value = "/comment/get")
-    public Optional<CommentDTO> getComment(UUID commentId) throws ClassNotFoundException {
-
-        return Optional.of(
-                (CommentDTO) EntityDtoConversion.ConvertToDTO(commentService.getComment(commentId)));
+    @GetMapping(value = "/by/user")
+    public Page<CommentDTO> getAllByPostId(@RequestBody RequestFromUUID requestFromUUID, @PathParam(value = "pg") int pg, @PathParam(value = "sz") int sz) {
+        return commentService.getByPostId(requestFromUUID.getUuid(), pg, sz);
     }
 
-    @GetMapping(value = "/comment/by/post")
-    public Set<?> getCommentByPost(UUID postId, int pageNumber) {
-        return commentService.getCommentByPost(postId, pageNumber);
+    @PostMapping(value = "/create", consumes = {"application/json"})
+    public String create(@RequestBody NewCommentForm commentForm, HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException {
+
+        return commentService.create(commentForm, "akgunmuhammed.95@protonmail.com");
     }
 
-    @PostMapping(value = "/comment/create", consumes = {"application/json"})
-    public ResponseEntity<?> createComment(@RequestParam String postId, @RequestBody CommentDTO commentDTO, HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException {
-
-        return commentService.createComment(UUID.fromString(postId), (Comment) EntityDtoConversion.ConvertToEntity(commentDTO), request, response);
+    @PostMapping(value = "/edit")
+    public String edit(@RequestBody CommentDTO commentDTO, HttpServletRequest request, HttpServletResponse response) {
+        return commentService.edit(commentDTO, request, response);
     }
 
-    @PostMapping(value = "/comment/remove")
-    public ResponseEntity<?> removeComment(UUID commentId, HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping(value = "/{id}/remove")
+    public String remove(@PathVariable(value = "id") UUID id, HttpServletRequest request, HttpServletResponse response) {
 
-        return commentService.removeComment(commentId, request, response);
+        return commentService.remove(id, request, response);
     }
-
 }

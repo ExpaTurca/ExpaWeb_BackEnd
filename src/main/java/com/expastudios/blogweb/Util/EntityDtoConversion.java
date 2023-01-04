@@ -1,5 +1,5 @@
 /***************************************************************
- * Copyright (c) 2022
+ * Copyright (c) 2022-2023
  **************************************************************/
 package com.expastudios.blogweb.Util;
 
@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,7 +17,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EntityDtoConversion {
 
-    @Autowired
     private static final ModelMapper modelMapper = new ModelMapper();
 
     private static final String DtoPath = "com.expastudios.blogweb.entity.DTOs";
@@ -34,8 +32,8 @@ public class EntityDtoConversion {
     }
 
     public static <T> Object ConvertToDTO(T entity)
-            throws
-            ClassNotFoundException {
+            throws ClassNotFoundException {
+
         /* Entity To DTO Mapping */
         return modelMapper.map(entity, Class.forName(GetDtoPath(entity)));
     }
@@ -49,18 +47,18 @@ public class EntityDtoConversion {
 	}
 	
 	public static <T> Set < T > ConvertListToDto ( Set<T> SetEntity ) {
-		
-		return SetEntity
-		         .stream ( )
-		         .peek ( map -> {
-			         try {
-				         modelMapper.map ( ConvertToDTO ( map ), Class.forName (GetDtoPath ( map ) ));
-			         } catch ( ClassNotFoundException e ) {
-				         throw new RuntimeException ( e );
-			         }
-		         } )
-		         .collect ( Collectors.toSet ( ) );
-	}
+
+        return SetEntity
+                .stream()
+                .peek(map -> {
+                    try {
+                        modelMapper.map(map, Class.forName(GetDtoPath(map)));
+                    } catch (ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toSet());
+    }
 	
 	public static < T > Set < T > ConvertListToEntity ( Set < T > SetDto ) {
 		
@@ -68,7 +66,7 @@ public class EntityDtoConversion {
 		         .stream ( )
 		         .peek ( map -> {
 			         try {
-				         modelMapper.map ( ConvertToDTO ( map ), Class.forName (GetEntityPath ( map ) ));
+                         modelMapper.map(map, Class.forName(GetEntityPath(map)));
 			         } catch ( ClassNotFoundException e ) {
 				         throw new RuntimeException ( e );
 			         }

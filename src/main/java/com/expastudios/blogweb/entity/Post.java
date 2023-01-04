@@ -1,5 +1,5 @@
 /***************************************************************
- * Copyright (c) 2022
+ * Copyright (c) 2022-2023
  **************************************************************/
 
 
@@ -9,15 +9,16 @@ package com.expastudios.blogweb.entity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,14 +28,15 @@ import java.util.UUID;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class Post {
+public class Post implements java.io.Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator", parameters = {
 			@org.hibernate.annotations.Parameter(name = "uuid_gen_strategy_class",
 					value = "org.hibernate.id.uuid.CustomVersionOneStrategy")})
-	@Column(nullable = false, insertable = false, updatable = false, columnDefinition = "VARCHAR(36)")
+	@Column(nullable = false, insertable = false, updatable = false)
+	@Type(type = "uuid-char")
 	private UUID id;
 
 	@NotNull
@@ -51,26 +53,18 @@ public class Post {
 
 	@NotNull
 	@Column(columnDefinition = "TimeStamp default CURRENT_TIMESTAMP")
-	@UpdateTimestamp()
+	@CreationTimestamp()
 	private LocalDateTime createdAt;
 
 	@UpdateTimestamp()
-	private LocalDateTime updatedAt;
+	private LocalDateTime editedAt;
 
-	@NotNull
 	@ManyToOne
-	@JoinColumn(name = "categoryId")
-	private Category category;
+	@JoinColumn(name = "user_id", nullable = false)
+	private Account author;
 
-	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "user_id")
-	@Fetch(FetchMode.SELECT)
-	private User author;
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@Fetch(FetchMode.JOIN)
-	private Set<Comment> commentSet = new java.util.LinkedHashSet<>();
+	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<Comment> commentSet = new HashSet<>();
 
 	@NotNull
 	@Column(columnDefinition = "boolean default true")

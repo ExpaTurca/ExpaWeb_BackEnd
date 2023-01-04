@@ -1,5 +1,5 @@
 /***************************************************************
- * Copyright (c) 2022-2023
+ * Copyright (c) 2023
  **************************************************************/
 package com.expastudios.blogweb.entity.Forms;
 
@@ -7,14 +7,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class NewPostForm {
-
-    private String title;
-
-    private String metaTitle;
-
-    private String content;
+public class RequestFromUUID {
+    private UUID uuid;
 }
