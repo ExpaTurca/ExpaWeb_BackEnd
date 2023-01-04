@@ -28,11 +28,11 @@ http://localhost:8080/api/user/create
 <h2><u>Request Body</u></h2>
 {
 <br>
-"title"= "Post Title"
+"title": "Post Title"
 <br>
-"metaTitle"= "Keywords For SEO Optimization"
+"metaTitle": "Keywords For SEO Optimization"
 <br>
-"content"= "Post Content"
+"content": "Post Content"
 <br>
 }
 </div>
